@@ -1,3 +1,4 @@
+/* Base font & reset */
 body {
   font-family:
     system-ui,
@@ -13,110 +14,126 @@ body {
     sans-serif;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #fff;
 }
 
-h1,
-h2,
-p {
+/* Typography resets */
+h1, h2, h3, h4, h5, h6, p {
   margin: 0;
   padding: 0;
 }
 
 h1 {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   font-weight: 700;
   line-height: 1.4;
-  margin-bottom: 2rem;
-  margin-top: 2rem;
+  margin: 2rem 0 1rem;
 }
 
 h2 {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 700;
   line-height: 1.4;
   margin-bottom: 1rem;
 }
 
 h4 {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin: 0.5rem 0;
 }
 
 h5 {
-  margin-bottom: 1rem;
-  margin-top: 0.5rem;
+  margin: 0.5rem 0 1rem;
 }
 
 p {
   font-size: 1rem;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
+/* Links */
 a {
   color: #000;
   text-decoration: none;
 }
 
 a:hover {
-  text-decoration: underline;
+  text-decoration: none;
   cursor: pointer;
 }
 
+/* Horizontal line */
 hr {
-  border-bottom: none;
-  border-top: 1px solid #000;
-  margin: 0;
+  border: none;
+  border-top: 1px solid #e0e0e0;
+  margin: 2rem 0;
 }
 
+/* Pre/code formatting */
 pre {
   white-space: pre-wrap;
 }
 
-body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+code {
+  background: #f3f3f3;
+  border-radius: 4px;
+  font-family: monospace;
+  padding: 0.25rem 0.4rem;
 }
 
+/* Layout */
 body > main {
-  margin: 0 1rem 1rem 1rem;
+  flex: 1;
+  margin: 0;
 }
 
+/* Full-width sections with max-width container for readability */
 section {
-  padding: 1rem 0;
-  @media (min-width: 768px) {
-    padding: 2rem 0;
-  }
+  width: 100%;
+  padding: 2rem 1rem;
 }
 
+section > .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Form elements */
 fieldset {
   display: flex;
   flex-direction: column;
   margin-bottom: 0.5rem;
   padding: 1rem;
+  border: none;
 }
 
 form {
+  width: 100%;
   max-width: 100%;
-  @media (min-width: 768px) {
-    max-width: 400px;
+}
+
+@media (min-width: 768px) {
+  form {
+    max-width: 500px;
   }
 }
 
-input {
+input,
+textarea,
+select {
   border-radius: 4px;
-  border: 1px solid #000;
+  border: 1px solid #ccc;
   font-size: 1rem;
-  margin-bottom: 0.5rem;
-  margin-top: 0.25rem;
+  margin: 0.25rem 0 0.75rem;
   padding: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-legend {
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
+/* Lists */
 ul {
   list-style: none;
   margin: 0;
@@ -130,10 +147,50 @@ li {
 dl {
   margin: 0.5rem 0;
 }
+/* Buttons */
+.btn {
+  display: inline-block;
+  text-align: center;
+  background-color: #3ba7d7;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+}
 
-code {
-  background: #ddd;
-  border-radius: 4px;
-  font-family: monospace;
-  padding: 0.25rem;
+.btn:hover {
+  background-color: #3089b0;
+  cursor: pointer;
+}
+
+.btn-block {
+  display: block;
+  width: 100%;
+}
+
+.btn-lg {
+  padding: 0.75rem 1.25rem;
+  font-size: 1.125rem;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+/* Responsive typography scaling */
+@media (min-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+  h2 {
+    font-size: 1.6rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  section {
+    padding: 3rem 1.5rem;
+  }
 }

@@ -9,7 +9,7 @@ import {
   SearchFormPredictive,
 } from '~/components/SearchFormPredictive';
 import {SearchResultsPredictive} from '~/components/SearchResultsPredictive';
-
+import ChatWidget from "~/components/ChatWidget";
 /**
  * @param {PageLayoutProps}
  */
@@ -34,7 +34,8 @@ export function PageLayout({
           publicStoreDomain={publicStoreDomain}
         />
       )}
-      <main>{children}</main>
+      <main>{children} {children}
+        <ChatWidget /> {/* Always visible */}</main>
       <Footer
         footer={footer}
         header={header}

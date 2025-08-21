@@ -1,37 +1,30 @@
-import {Await, useLoaderData, Link} from 'react-router';
+import {Await, useLoaderData} from 'react-router';
 import {Suspense} from 'react';
-import {Image} from '@shopify/hydrogen';
-import {ProductItem} from '~/components/ProductItem';
-
+import Hero from "../components/Homepage/Hero.jsx";
+import AllCpapMachines from "../components/Homepage/AllCpapMachines.jsx";
+import WhyChooseUs from "../components/Homepage/WhyChooseUs.jsx";
+import CpapMachineGuide from "../components/Homepage/CpapMachineGuide.jsx";
+import CpapSetup from "../components/Homepage/CompleteYourCPAPSetup.jsx";
+import CpapFaqs from "../components/Homepage/CPAPMachinesFAQs.jsx";
 /**
  * @type {MetaFunction}
  */
 export const meta = () => {
-  return [{title: 'Hydrogen | Home'}];
+  return [{title: 'CPAP Machines Page'}];
 };
 
 /**
  * @param {LoaderFunctionArgs} args
  */
 export async function loader(args) {
-  // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
-
-  // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
-
   return {...deferredData, ...criticalData};
 }
 
-/**
- * Load data necessary for rendering content above the fold. This is the critical data
- * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
- * @param {LoaderFunctionArgs}
- */
 async function loadCriticalData({context}) {
   const [{collections}] = await Promise.all([
     context.storefront.query(FEATURED_COLLECTION_QUERY),
-    // Add other queries here, so that they are loaded in parallel
   ]);
 
   return {
@@ -39,17 +32,10 @@ async function loadCriticalData({context}) {
   };
 }
 
-/**
- * Load data for rendering content below the fold. This data is deferred and will be
- * fetched after the initial page load. If it's unavailable, the page should still 200.
- * Make sure to not throw any errors here, as it will cause the page to 500.
- * @param {LoaderFunctionArgs}
- */
 function loadDeferredData({context}) {
   const recommendedProducts = context.storefront
     .query(RECOMMENDED_PRODUCTS_QUERY)
     .catch((error) => {
-      // Log query errors, but don't throw them so the page can still render
       console.error(error);
       return null;
     });
@@ -60,63 +46,16 @@ function loadDeferredData({context}) {
 }
 
 export default function Homepage() {
-  /** @type {LoaderReturnData} */
   const data = useLoaderData();
   return (
-    <div className="home">
-      <FeaturedCollection collection={data.featuredCollection} />
-      <RecommendedProducts products={data.recommendedProducts} />
-    </div>
-  );
-}
-
-/**
- * @param {{
- *   collection: FeaturedCollectionFragment;
- * }}
- */
-function FeaturedCollection({collection}) {
-  if (!collection) return null;
-  const image = collection?.image;
-  return (
-    <Link
-      className="featured-collection"
-      to={`/collections/${collection.handle}`}
-    >
-      {image && (
-        <div className="featured-collection-image">
-          <Image data={image} sizes="100vw" />
-        </div>
-      )}
-      <h1>{collection.title}</h1>
-    </Link>
-  );
-}
-
-/**
- * @param {{
- *   products: Promise<RecommendedProductsQuery | null>;
- * }}
- */
-function RecommendedProducts({products}) {
-  return (
-    <div className="recommended-products">
-      <h2>Recommended Products</h2>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Await resolve={products}>
-          {(response) => (
-            <div className="recommended-products-grid">
-              {response
-                ? response.products.nodes.map((product) => (
-                    <ProductItem key={product.id} product={product} />
-                  ))
-                : null}
-            </div>
-          )}
-        </Await>
-      </Suspense>
-      <br />
-    </div>
+    <main className="home">
+      <Hero />
+      <AllCpapMachines products={data.recommendedProducts} />
+      <WhyChooseUs />
+      <CpapMachineGuide />
+      <CpapSetup />
+      <CpapFaqs />
+    </main>
   );
 }
 
@@ -148,6 +87,7 @@ const RECOMMENDED_PRODUCTS_QUERY = `#graphql
     id
     title
     handle
+    productType
     priceRange {
       minVariantPrice {
         amount
@@ -162,18 +102,17 @@ const RECOMMENDED_PRODUCTS_QUERY = `#graphql
       height
     }
   }
-  query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
-    @inContext(country: $country, language: $language) {
-    products(first: 4, sortKey: UPDATED_AT, reverse: true) {
-      nodes {
-        ...RecommendedProduct
-      }
+  query RecommendedProducts($country: CountryCode, $language: LanguageCode)
+  @inContext(country: $country, language: $language) {
+  products(
+    first: 20
+    sortKey: UPDATED_AT
+    reverse: true
+    query: "product_type:'CPAP Machines' OR product_type:'BiPAP Machines'"
+  ) {
+    nodes {
+      ...RecommendedProduct
     }
   }
+}
 `;
-
-/** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
-/** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
-/** @typedef {import('storefrontapi.generated').FeaturedCollectionFragment} FeaturedCollectionFragment */
-/** @typedef {import('storefrontapi.generated').RecommendedProductsQuery} RecommendedProductsQuery */
-/** @typedef {import('@shopify/remix-oxygen').SerializeFrom<typeof loader>} LoaderReturnData */
